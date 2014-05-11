@@ -1,4 +1,6 @@
-# Mines Game by Maurits van der Schee <maurits@vdschee.nl>
+# Minesweeper game for iOS in Python (requires Pythonista app)
+# Author: Maurits van der Schee <maurits@vdschee.nl>
+# Sprites: http://www.curtisbright.com/msx/
 
 from PIL import Image
 from StringIO import *
