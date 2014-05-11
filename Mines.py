@@ -1,4 +1,5 @@
-# Mines Game
+# Mines Game by Maurits van der Schee <maurits@vdschee.nl>
+
 from PIL import Image
 from StringIO import *
 from base64 import b64decode
