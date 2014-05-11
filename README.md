@@ -1,10 +1,6 @@
 pythonista-minesweeper
 ======================
 
-Minesweeper implementation for iOS in Python (needs Pythonista).
+Minesweeper game for iOS in Python (requires [Pythonista](http://omz-software.com/pythonista/) app).
 
-Uses a Minesweeper X skin that is Base64 encoded in the source-code.
-
-Pythonista: http://omz-software.com/pythonista/
-
-Minesweeper X: http://www.curtisbright.com/msx/
+Uses a [Minesweeper X](http://www.curtisbright.com/msx/) skin that is Base64 encoded in the source-code.
