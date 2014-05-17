@@ -1,7 +1,4 @@
-# Minesweeper game for iOS in Python (requires Pythonista app)
-# Author: Maurits van der Schee <maurits@vdschee.nl>
-# Sprites: http://www.curtisbright.com/msx/
-
+# Mines Game
 from PIL import Image
 from StringIO import *
 from base64 import b64decode
@@ -271,14 +268,20 @@ class Game (Scene):
 			tile.marked = False
 			tile.open = False
 			tile.image = self.sprites.icons[0].name
-			neighbours = ((-1,-1),(0,-1),(1,-1),(-1,0),(1,0),(-1,1),(0,1),(1,1))
 			tile.score = 0
-			for (dx,dy) in neighbours:
-				n = (y+dy)*self.width+x+dx
-				if x+dx>=0 and x+dx<self.width and y+dy>=0 and y+dy<self.height:
-					if bomb_locations[n]:
-						tile.score += 1
+			for neighbour in self.get_neighbours(tile):
+				if bomb_locations[self.layers.tiles.index(neighbour)]:
+					tile.score += 1
 	
+	def get_neighbours(self,tile):
+		i = self.layers.tiles.index(tile)
+		x, y = i % self.width, i / self.width
+		neighbours = ((-1,-1),(0,-1),(1,-1),(-1,0),(1,0),(-1,1),(0,1),(1,1))
+		for (dx,dy) in neighbours:
+			if x+dx>=0 and x+dx<self.width and y+dy>=0 and y+dy<self.height:
+				n = (y+dy)*self.width+x+dx
+				yield self.layers.tiles[n]
+					
 	def draw_tile(self,tile):
 		if tile.open:
 			if tile.bomb:
@@ -314,8 +317,15 @@ class Game (Scene):
 			if tile.selected and release:
 				tile.selected = False
 				if not tile.marked and tile.hold<15:
-					tile.open = True
-	
+					self.open_tile(tile)
+
+	def open_tile(self,tile):
+		tile.open = True
+		if tile.score == 0 and not tile.bomb:
+			for neighbour in self.get_neighbours(tile):
+				if not neighbour.open:
+					self.open_tile(neighbour)
+							
 	def touch_button(self, touch, release):
 		button = self.layers.button
 		button.selected = touch.location in button.frame
