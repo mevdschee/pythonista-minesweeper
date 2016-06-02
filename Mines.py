@@ -45,7 +45,7 @@ class Game (Scene):
 		w = self.width
 		h = self.height
 		size = Size(w*16+12*2, h*16+11*3+33)
-		background = Image.new('RGBA',size,"silver")
+		background = Image.new('RGBA',(int(size.w),int(size.h)),"silver")
 		b = [([0,82,12,93],[0,0,12,11]),
 		     ([13,82,14,93],[12,0,12+w*16,11]),
 		     ([15,82,27,93],[12+w*16,0,12+w*16+12,11]),
