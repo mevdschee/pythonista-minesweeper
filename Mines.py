@@ -38,7 +38,7 @@ class Game (Scene):
 		width = bounds[2]-bounds[0]
 		height = bounds[3]-bounds[1]
 		size = Size(width*self.scale,height*self.scale)
-		name = load_pil_image(image.crop(bounds).resize(size.as_tuple()))
+		name = load_pil_image(image.crop(bounds).resize((int(size.w),int(size.h))))
 		return Sprite(name,size)
 		
 	def load_bg_sprite(self,image):
@@ -64,7 +64,7 @@ class Game (Scene):
 		for (s,t) in b:
 			background.paste(image.crop(s).resize((t[2]-t[0],t[3]-t[1])),t)
 		size = Size(size.w * self.scale, size.h * self.scale)
-		background = background.resize(size.as_tuple())
+		background = background.resize((int(size.w),int(size.h)))
 		name = load_pil_image(background)
 		return Sprite(name,size)
 
