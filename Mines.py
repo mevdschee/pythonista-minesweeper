@@ -18,22 +18,23 @@ Sprite = namedtuple('Sprite',('name','size'))
 class State:
 	thinking, playing, lost, won = range(4)
 
-class Game (Scene):
-	
+class Game(Scene):
+		
 	def setup(self):
 		self.width = 8
 		self.height = 8
 		self.bombs = 10
+		self.holding = 15
 		self.scale = self.calculate_scale()
 		self.sprites = self.load_sprites()
 		self.layers = self.add_layers()
 		self.new_game()
-	
+
 	def calculate_scale(self):
 		h_scale = int((self.size.w/(self.width))/16)
 		v_scale = int((self.size.h/(self.height+3))/16)
 		return min(h_scale,v_scale)
-	
+
 	def load_sprite(self,image,bounds):
 		width = bounds[2]-bounds[0]
 		height = bounds[3]-bounds[1]
@@ -47,20 +48,20 @@ class Game (Scene):
 		size = Size(w*16+12*2, h*16+11*3+33)
 		background = Image.new('RGBA',(int(size.w),int(size.h)),"silver")
 		b = [([0,82,12,93],[0,0,12,11]),
-		     ([13,82,14,93],[12,0,12+w*16,11]),
-		     ([15,82,27,93],[12+w*16,0,12+w*16+12,11]),
-		     ([0,94,12,95],[0,11,12,11+33]),
-		     ([15,94,27,95],[12+w*16,11,12+w*16+12,11+33]),
-		     ([0,96,12,107],[0,11+33,12,11+33+11]),
-		     ([13,96,14,107],[12,11+33,12+w*16,11+33+11]),
-		     ([15,96,27,107],[12+w*16,11+33,12+w*16+12,11+33+11]),
-		     ([0,108,12,109],[0,11+33+11,12,11+33+11+h*16]),
-		     ([15,108,27,109],[12+w*16,11+33+11,12+w*16+12,11+33+11+h*16]),
-		     ([0,110,12,121],[0,11+33+11+h*16,12,11+33+11+h*16+11]),
-		     ([13,110,14,121],[12,11+33+11+h*16,12+w*16,11+33+11+h*16+11]),
-		     ([15,110,27,121],[12+w*16,11+33+11+h*16,12+w*16+12,11+33+11+h*16+11]),
-		     ([28,82,69,107],[12+4,11+4,12+4+41,11+4+25]),
-		     ([28,82,69,107],[12+w*16-4-41,11+4,12+w*16-4,11+4+25])]
+				 ([13,82,14,93],[12,0,12+w*16,11]),
+				 ([15,82,27,93],[12+w*16,0,12+w*16+12,11]),
+				 ([0,94,12,95],[0,11,12,11+33]),
+				 ([15,94,27,95],[12+w*16,11,12+w*16+12,11+33]),
+				 ([0,96,12,107],[0,11+33,12,11+33+11]),
+				 ([13,96,14,107],[12,11+33,12+w*16,11+33+11]),
+				 ([15,96,27,107],[12+w*16,11+33,12+w*16+12,11+33+11]),
+				 ([0,108,12,109],[0,11+33+11,12,11+33+11+h*16]),
+				 ([15,108,27,109],[12+w*16,11+33+11,12+w*16+12,11+33+11+h*16]),
+				 ([0,110,12,121],[0,11+33+11+h*16,12,11+33+11+h*16+11]),
+				 ([13,110,14,121],[12,11+33+11+h*16,12+w*16,11+33+11+h*16+11]),
+				 ([15,110,27,121],[12+w*16,11+33+11+h*16,12+w*16+12,11+33+11+h*16+11]),
+				 ([28,82,69,107],[12+4,11+4,12+4+41,11+4+25]),
+				 ([28,82,69,107],[12+w*16-4-41,11+4,12+w*16-4,11+4+25])]
 		for (s,t) in b:
 			background.paste(image.crop(s).resize((t[2]-t[0],t[3]-t[1])),t)
 		size = Size(size.w * self.scale, size.h * self.scale)
@@ -127,7 +128,7 @@ class Game (Scene):
 		sprites['buttons'] = map(lambda x: f([x*27,55,x*27+26,81]),xrange(5))
 		sprites['background'] = self.load_bg_sprite(image)
 		return namedtuple('Sprites',sprites.keys())(*sprites.values())
-	
+
 	def add_layers(self):
 		# root layer
 		self.root_layer = Layer(self.bounds)
@@ -183,7 +184,7 @@ class Game (Scene):
 		offset_x = (self.size.w - width)/2
 		offset_y = bg_bottom+11*self.scale
 		tiles = []
-		for i in xrange(self.width * self.height):
+		for i in xrange(self.width*self.height):
 			x, y = i % self.width, i / self.width
 			x, y = offset_x + x * tile_width, offset_y + y * tile_height
 			tile = Layer(Rect(x, y, tile_width, tile_height))
@@ -197,7 +198,7 @@ class Game (Scene):
 		layers['seconds'] = seconds
 		layers['tiles'] = tiles
 		return namedtuple('Layers',layers.keys())(*layers.values())
-	
+
 	def draw(self):
 		background(.8,.8,.8)
 		self.layers.root.draw()
@@ -217,7 +218,10 @@ class Game (Scene):
 				for i in xrange(3):
 					digit = (bombs_left/pow(10,i))%10
 					self.layers.bombs[2-i].image = self.sprites.digits[digit].name
-			seconds_passed = int((datetime.now() - self.start).total_seconds())
+			if self.start == None:
+				seconds_passed = 0
+			else:
+				seconds_passed = int((datetime.now() - self.start).total_seconds())
 			for i in xrange(3):
 				digit = (seconds_passed/pow(10,i))%10
 				self.layers.seconds[2-i].image = self.sprites.digits[digit].name
@@ -242,7 +246,7 @@ class Game (Scene):
 			self.state = State.won
 			return 0
 		return self.bombs - marked
-	
+
 	def draw_button(self):
 		if self.state in [State.thinking, State.playing]:
 			self.state = State.thinking
@@ -258,7 +262,7 @@ class Game (Scene):
 	def new_game(self):
 		self.state = State.thinking
 		self.layers.button.selected = False
-		self.start = datetime.now()
+		self.start = None
 		bomb_locations = [True] * self.bombs
 		bomb_locations+= [False] * (self.width * self.height - self.bombs)
 		shuffle(bomb_locations)
@@ -275,7 +279,7 @@ class Game (Scene):
 			for neighbour in self.get_neighbours(tile):
 				if bomb_locations[self.layers.tiles.index(neighbour)]:
 					tile.score += 1
-	
+
 	def get_neighbours(self,tile):
 		i = self.layers.tiles.index(tile)
 		x, y = i % self.width, i / self.width
@@ -284,7 +288,7 @@ class Game (Scene):
 			if x+dx>=0 and x+dx<self.width and y+dy>=0 and y+dy<self.height:
 				n = (y+dy)*self.width+x+dx
 				yield self.layers.tiles[n]
-					
+						
 	def draw_tile(self,tile):
 		if tile.open:
 			if tile.bomb:
@@ -297,8 +301,8 @@ class Game (Scene):
 					tile.hold += 1
 				else:
 					tile.hold = 0
-				if tile.hold == 15:
-						tile.marked = not tile.marked
+				if tile.hold == self.holding:
+					tile.marked = not tile.marked
 				if tile.marked:
 					tile.image = self.sprites.icons[3].name
 				elif tile.selected:
@@ -319,7 +323,13 @@ class Game (Scene):
 			tile.selected = touch.location in tile.frame
 			if tile.selected and release:
 				tile.selected = False
-				if not tile.marked and tile.hold<15:
+				if self.start == None:
+					if tile.bomb:
+						self.new_game()
+						self.touch_tile(touch,True)
+					else:
+						self.start = datetime.now()
+				if not tile.marked and tile.hold < self.holding:
 					self.open_tile(tile)
 
 	def open_tile(self,tile):
@@ -328,13 +338,13 @@ class Game (Scene):
 			for neighbour in self.get_neighbours(tile):
 				if not neighbour.open:
 					self.open_tile(neighbour)
-							
+					
 	def touch_button(self, touch, release):
 		button = self.layers.button
 		button.selected = touch.location in button.frame
 		if button.selected and release:
 			self.new_game()
-		
+	
 	def touch_began(self, touch):
 		if self.state in [State.thinking, State.playing]:
 			self.touch_tile(touch, False)
@@ -342,7 +352,7 @@ class Game (Scene):
 		
 	def touch_moved(self,touch):
 		self.touch_began(touch)
-	
+
 	def touch_ended(self, touch):
 		if self.state in [State.thinking, State.playing]:
 			self.touch_tile(touch, True)
