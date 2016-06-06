@@ -328,6 +328,7 @@ class Game(Scene):
 				if self.start == None:
 					if tile.bomb:
 						self.new_game()
+						tile.selected = True
 						self.touch_tile(touch,True)
 					else:
 						self.start = datetime.now()
