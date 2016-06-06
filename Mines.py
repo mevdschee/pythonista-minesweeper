@@ -274,7 +274,8 @@ class Game(Scene):
 			tile.hold = 0
 			tile.marked = False
 			tile.open = False
-			tile.image = self.sprites.icons[0].name
+			tile.first = False
+			#tile.image = self.sprites.icons[0].name
 			tile.score = 0
 			for neighbour in self.get_neighbours(tile):
 				if bomb_locations[self.layers.tiles.index(neighbour)]:
@@ -325,15 +326,13 @@ class Game(Scene):
 			tile.selected = touch.location in tile.frame
 			if tile.selected and release:
 				tile.selected = False
-				if self.start == None:
-					if tile.bomb:
-						self.new_game()
-						tile.selected = True
-						self.touch_tile(touch,True)
-					else:
-						self.start = datetime.now()
 				if not tile.marked and tile.hold < self.holding:
+					if self.start == None and tile.bomb:
+						self.new_game()
+						return self.touch_tile(touch,True)
 					self.open_tile(tile)
+				if self.start == None:
+					self.start = datetime.now()
 
 	def open_tile(self,tile):
 		tile.open = True
