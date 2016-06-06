@@ -290,17 +290,19 @@ class Game(Scene):
 				yield self.layers.tiles[n]
 						
 	def draw_tile(self,tile):
+		if tile.selected:
+			tile.hold += 1
+		else:
+			tile.hold = 0
 		if tile.open:
 			if tile.bomb:
 				tile.image = self.sprites.icons[5].name
 			else:
 				tile.image = self.sprites.numbers[tile.score].name
+			if tile.hold == self.holding:
+				self.open_neighbours(tile)
 		else:
 			if self.state in [State.thinking, State.playing]:
-				if tile.selected:
-					tile.hold += 1
-				else:
-					tile.hold = 0
 				if tile.hold == self.holding:
 					tile.marked = not tile.marked
 				if tile.marked:
@@ -331,8 +333,6 @@ class Game(Scene):
 						self.start = datetime.now()
 				if not tile.marked and tile.hold < self.holding:
 					self.open_tile(tile)
-				if tile.open and tile.hold >= self.holding:
-					self.open_neighbours(tile)
 
 	def open_tile(self,tile):
 		tile.open = True
