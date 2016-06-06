@@ -331,6 +331,8 @@ class Game(Scene):
 						self.start = datetime.now()
 				if not tile.marked and tile.hold < self.holding:
 					self.open_tile(tile)
+				if tile.open and tile.hold >= self.holding:
+					self.open_neighbours(tile)
 
 	def open_tile(self,tile):
 		tile.open = True
@@ -338,7 +340,14 @@ class Game(Scene):
 			for neighbour in self.get_neighbours(tile):
 				if not neighbour.open:
 					self.open_tile(neighbour)
-					
+	
+	def open_neighbours(self,tile):
+		for neighbour in self.get_neighbours(tile):
+			if not neighbour.marked:
+				neighbour.open = True
+			if neighbour.score == 0 and not neighbour.bomb:
+				self.open_tile(neighbour)
+	
 	def touch_button(self, touch, release):
 		button = self.layers.button
 		button.selected = touch.location in button.frame
