@@ -7,4 +7,4 @@ Uses a [Minesweeper X](http://www.curtisbright.com/msx/) skin that is Base64 enc
 
 ![Screenshot iPad](https://www.leaseweb.com/labs/wp-content/uploads/2014/05/minesweeper_ipad.jpg)
 
-see: https://www.leaseweb.com/labs/2014/05/minesweeper-game-ios-python-pythonista
+see: https://www.leaseweb.com/labs/2014/05/minesweeper-game-ios-python-pythonista/
