@@ -5,6 +5,6 @@ Minesweeper game for iOS in Python (requires [Pythonista](http://omz-software.co
 
 Uses a [Minesweeper X](http://www.curtisbright.com/msx/) skin that is Base64 encoded in the source-code.
 
-![Screenshot iPad](http://www.leaseweblabs.com/wp-content/uploads/2014/05/minesweeper_ipad.jpg)
+![Screenshot iPad](https://www.leaseweb.com/labs/wp-content/uploads/2014/05/minesweeper_ipad.jpg)
 
 see: https://www.leaseweb.com/labs/2014/05/minesweeper-game-ios-python-pythonista
