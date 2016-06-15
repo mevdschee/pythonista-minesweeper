@@ -1,4 +1,4 @@
-# Minesweeper game for iOS in Python (requires Pythonista)
+# Minesweeper game for iOS in Python (requires Pythonista 2)
 # Author: Maurits van der Schee <maurits@vdschee.nl>
 # Sprites: http://www.curtisbright.com/msx/
 
